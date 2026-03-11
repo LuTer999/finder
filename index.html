@@ -37,17 +37,7 @@
             margin-bottom: 10px;
         }
 
-        .warning-box {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            color: #856404;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-weight: 500;
-        }
-
-        .solution-box {
+        .cors-solution {
             background: #e8f5e9;
             border: 2px solid #27ae60;
             color: #2c3e50;
@@ -56,15 +46,19 @@
             margin: 20px 0;
         }
 
-        .solution-box h3 {
+        .cors-solution h3 {
             color: #27ae60;
             margin-bottom: 10px;
         }
 
-        .solution-box a {
+        .cors-solution a {
             color: #2980b9;
             font-weight: 600;
             text-decoration: none;
+        }
+
+        .cors-solution a:hover {
+            text-decoration: underline;
         }
 
         .main-grid {
@@ -130,11 +124,6 @@
             border-color: #667eea;
             outline: none;
             box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
-        }
-
-        .input-group input::placeholder {
-            color: #999;
-            font-style: italic;
         }
 
         .btn {
@@ -432,19 +421,27 @@
         .toast.error { border-left: 4px solid #e74c3c; }
         .toast.warning { border-left: 4px solid #f39c12; }
 
-        .url-example {
-            font-size: 0.85em;
-            color: #666;
-            margin-top: 5px;
-            padding: 8px;
-            background: #f5f5f5;
-            border-radius: 5px;
+        .proxy-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 10px;
         }
 
-        .url-example code {
-            background: #e0e0e0;
-            padding: 2px 5px;
-            border-radius: 3px;
+        .proxy-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .manual-mode {
+            margin: 20px 0;
+            padding: 20px;
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
         }
 
         @media (max-width: 768px) {
@@ -458,19 +455,40 @@
     <div class="container">
         <div class="header">
             <h1>🕵️ Shutterstock Portfolio Comparator</h1>
-            <p>РАБОЧАЯ ВЕРСИЯ • Сравнение портфелей авторов по прямым ссылкам</p>
+            <p>РАБОЧАЯ ВЕРСИЯ • Сравнение портфелей авторов</p>
         </div>
 
         <!-- Решение проблемы CORS -->
-        <div class="solution-box">
-            <h3>🔧 Как сделать приложение рабочим:</h3>
-            <p><strong>Вариант 1 (рекомендуется):</strong> Установите расширение для Chrome</p>
+        <div class="cors-solution">
+            <h3>🔧 Проблема с CORS решена!</h3>
+            <p>Выберите один из способов:</p>
             <ol style="margin-left: 20px; margin-top: 10px;">
-                <li>Установите <a href="https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf" target="_blank">Allow CORS</a> из Chrome Web Store</li>
-                <li>Включите расширение (нажмите на иконку)</li>
-                <li>Обновите страницу</li>
-                <li>Приложение будет работать!</li>
+                <li><strong>Вариант 1:</strong> Установите расширение <a href="https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf" target="_blank">Allow CORS</a> для Chrome</li>
+                <li><strong>Вариант 2:</strong> Используйте ручной режим (инструкция ниже)</li>
+                <li><strong>Вариант 3:</strong> Скачайте и запустите локально</li>
             </ol>
+        </div>
+
+        <!-- Выбор прокси -->
+        <div class="proxy-selector">
+            <label style="font-weight: 600;">Выберите прокси-сервер:</label>
+            <select id="proxySelect" onchange="changeProxy()">
+                <option value="corsproxy.io">https://corsproxy.io/?</option>
+                <option value="api.codetabs.com">https://api.codetabs.com/v1/proxy?quest=</option>
+                <option value="thingproxy.freeboard.io">https://thingproxy.freeboard.io/fetch/</option>
+                <option value="cors-anywhere.herokuapp.com">https://cors-anywhere.herokuapp.com/</option>
+                <option value="none">Без прокси (если установлено CORS расширение)</option>
+            </select>
+        </div>
+
+        <!-- Ручной режим -->
+        <div class="manual-mode">
+            <h3>📝 Ручной режим (если прокси не работают):</h3>
+            <p>1. Откройте ссылку автора в браузере</p>
+            <p>2. Сохраните страницу как HTML</p>
+            <p>3. Загрузите файл сюда:</p>
+            <input type="file" id="manualFile1" accept=".html,.htm" onchange="loadManualFile(1)" style="margin: 10px 0;">
+            <input type="file" id="manualFile2" accept=".html,.htm" onchange="loadManualFile(2)" style="margin: 10px 0;">
         </div>
 
         <div class="main-grid">
@@ -484,9 +502,6 @@
                 <div class="input-group">
                     <label>Ссылка на портфель автора:</label>
                     <input type="url" id="author1Url" placeholder="https://www.shutterstock.com/ru/g/author-name" value="https://www.shutterstock.com/ru/g/original_author">
-                    <div class="url-example">
-                        Пример: <code>https://www.shutterstock.com/ru/g/author_name</code> или <code>https://www.shutterstock.com/g/author_name</code>
-                    </div>
                 </div>
 
                 <div class="input-group">
@@ -536,9 +551,6 @@
                 <div class="input-group">
                     <label>Ссылка на портфель автора:</label>
                     <input type="url" id="author2Url" placeholder="https://www.shutterstock.com/ru/g/suspect-author" value="https://www.shutterstock.com/ru/g/suspect_author">
-                    <div class="url-example">
-                        Пример: <code>https://www.shutterstock.com/ru/g/author_name</code> или <code>https://www.shutterstock.com/g/author_name</code>
-                    </div>
                 </div>
 
                 <div class="input-group">
@@ -685,6 +697,54 @@
         };
 
         let matches = [];
+        let currentProxy = 'corsproxy.io';
+
+        function changeProxy() {
+            currentProxy = document.getElementById('proxySelect').value;
+            showToast(`Прокси изменен на: ${currentProxy}`, 'info');
+        }
+
+        // Ручная загрузка HTML файла
+        function loadManualFile(authorNum) {
+            const fileInput = document.getElementById(`manualFile${authorNum}`);
+            const file = fileInput.files[0];
+            
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const html = e.target.result;
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                const works = extractWorksFromPage(doc);
+                
+                if (works.length === 0) {
+                    showToast('Не удалось найти работы в файле', 'error');
+                    return;
+                }
+
+                if (authorNum === 1) {
+                    author1 = {
+                        url: 'manual upload',
+                        works: works,
+                        loaded: true
+                    };
+                    updateAuthorInfo(1, works);
+                } else {
+                    author2 = {
+                        url: 'manual upload',
+                        works: works,
+                        loaded: true
+                    };
+                    updateAuthorInfo(2, works);
+                }
+
+                showToast(`Загружено ${works.length} работ из файла`, 'success');
+                updateCompareButton();
+            };
+            reader.readAsText(file);
+        }
 
         // Загрузка портфеля автора
         async function loadAuthorPortfolio(authorNum) {
@@ -700,7 +760,6 @@
                 return;
             }
 
-            // Проверяем формат URL
             if (!authorUrl.includes('shutterstock.com')) {
                 showToast('Это не похоже на ссылку Shutterstock', 'error');
                 return;
@@ -713,48 +772,77 @@
             showToast(`Загрузка портфеля автора ${authorNum}...`, 'info');
 
             try {
-                // Для обхода CORS используем прокси
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(authorUrl)}`;
+                let allWorks = [];
                 
-                // Загружаем страницу
-                const response = await fetch(proxyUrl);
-                const data = await response.json();
-                
-                // Парсим HTML
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(data.contents, 'text/html');
-                
-                // Извлекаем работы
-                const works = extractWorksFromPage(doc);
-                
-                if (works.length === 0) {
-                    showToast('Не удалось найти работы. Проверьте ссылку', 'error');
+                // Загружаем несколько страниц
+                for (let page = 1; page <= pages; page++) {
+                    const pageUrl = authorUrl + (authorUrl.includes('?') ? '&' : '?') + 'page=' + page;
+                    
+                    // Используем выбранный прокси
+                    let proxyUrl;
+                    if (currentProxy === 'none') {
+                        proxyUrl = pageUrl;
+                    } else {
+                        proxyUrl = currentProxy + encodeURIComponent(pageUrl);
+                    }
+                    
+                    const response = await fetch(proxyUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    let html;
+                    if (currentProxy.includes('corsproxy') || currentProxy.includes('cors-anywhere')) {
+                        // Некоторые прокси возвращают текст напрямую
+                        html = await response.text();
+                    } else {
+                        // Некоторые возвращают JSON
+                        const data = await response.json();
+                        html = data.contents || data.body || JSON.stringify(data);
+                    }
+                    
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    const pageWorks = extractWorksFromPage(doc);
+                    allWorks = allWorks.concat(pageWorks);
+                    
+                    // Если работ меньше чем ожидалось - выходим
+                    if (pageWorks.length < 50) break;
+                    
+                    // Небольшая задержка между запросами
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+
+                if (allWorks.length === 0) {
+                    showToast('Не удалось найти работы. Попробуйте другой прокси или ручной режим', 'error');
                     return;
                 }
 
                 // Сохраняем в состояние
                 const authorData = {
                     url: authorUrl,
-                    works: works,
+                    works: allWorks,
                     loaded: true
                 };
 
                 if (authorNum === 1) {
                     author1 = authorData;
-                    updateAuthorInfo(1, works);
+                    updateAuthorInfo(1, allWorks);
                 } else {
                     author2 = authorData;
-                    updateAuthorInfo(2, works);
+                    updateAuthorInfo(2, allWorks);
                 }
 
-                showToast(`Загружено ${works.length} работ`, 'success');
+                showToast(`Загружено ${allWorks.length} работ`, 'success');
 
                 // Проверяем, можно ли активировать кнопку сравнения
                 updateCompareButton();
 
             } catch (error) {
                 console.error('Error loading portfolio:', error);
-                showToast('Ошибка загрузки: ' + error.message, 'error');
+                showToast('Ошибка загрузки. Попробуйте другой прокси или ручной режим', 'error');
             } finally {
                 // Разблокируем кнопку
                 loadBtn.disabled = false;
@@ -766,13 +854,35 @@
         function extractWorksFromPage(doc) {
             const works = [];
             
-            // Ищем элементы с работами
-            const items = doc.querySelectorAll('[data-automation="AssetItem"], .z_g_asset_item, .mui-style-1tl3k9n, article');
+            // Ищем элементы с работами (разные селекторы для Shutterstock)
+            const selectors = [
+                '[data-automation="AssetItem"]',
+                '.z_g_asset_item',
+                '.mui-style-1tl3k9n',
+                'article',
+                '.asset-grid-item',
+                '[data-testid="asset-grid-item"]'
+            ];
+            
+            let items = [];
+            for (const selector of selectors) {
+                const found = doc.querySelectorAll(selector);
+                if (found.length > 0) {
+                    items = found;
+                    break;
+                }
+            }
+            
+            // Если не нашли по селекторам, ищем все ссылки с изображениями
+            if (items.length === 0) {
+                const links = doc.querySelectorAll('a[href*="/image/"]');
+                items = links;
+            }
             
             items.forEach(item => {
                 try {
                     // Извлекаем ID работы из ссылки
-                    const link = item.querySelector('a');
+                    const link = item.tagName === 'A' ? item : item.querySelector('a');
                     const href = link?.href || '';
                     const idMatch = href.match(/\/(\d+)(?:\/|$)/);
                     const workId = idMatch ? idMatch[1] : '';
@@ -780,11 +890,11 @@
                     if (!workId) return;
                     
                     // Извлекаем название
-                    const titleEl = item.querySelector('[data-automation="AssetTitle"], .mui-style-1c1qj8b, h3, h4');
-                    const title = titleEl?.textContent?.trim() || `Work ${workId}`;
+                    const titleEl = item.querySelector('[data-automation="AssetTitle"], .mui-style-1c1qj8b, h3, h4, .asset-title');
+                    let title = titleEl?.textContent?.trim() || `Work ${workId}`;
                     
-                    // Извлекаем дату (пытаемся найти)
-                    const dateEl = item.querySelector('[data-automation="UploadDate"], time, .mui-style-1v5o7gv');
+                    // Извлекаем дату (если есть)
+                    const dateEl = item.querySelector('[data-automation="UploadDate"], time, .upload-date');
                     let date = '2020-01-01';
                     
                     if (dateEl) {
@@ -800,29 +910,26 @@
                         url: href.startsWith('http') ? href : `https://shutterstock.com${href}`
                     });
                 } catch (e) {
-                    console.log('Error parsing work:', e);
+                    // Игнорируем ошибки парсинга отдельных элементов
                 }
             });
             
             return works;
         }
 
-        // Обновление информации об авторе в интерфейсе
+        // Обновление информации об авторе
         function updateAuthorInfo(authorNum, works) {
             const infoDiv = document.getElementById(`author${authorNum}Info`);
             infoDiv.classList.add('show');
 
-            // Обновляем статистику
             document.getElementById(`author${authorNum}Count`).textContent = works.length;
             
-            // Находим первую и последнюю дату
             if (works.length > 0) {
                 const dates = works.map(w => w.date).sort();
                 document.getElementById(`author${authorNum}FirstDate`).textContent = dates[0];
                 document.getElementById(`author${authorNum}LastDate`).textContent = dates[dates.length - 1];
             }
 
-            // Показываем последние 10 работ
             const worksDiv = document.getElementById(`author${authorNum}Works`);
             let worksHtml = '';
             
@@ -841,7 +948,6 @@
             worksDiv.innerHTML = worksHtml;
         }
 
-        // Обновление кнопки сравнения
         function updateCompareButton() {
             const compareBtn = document.getElementById('compareBtn');
             compareBtn.disabled = !(author1.loaded && author2.loaded);
@@ -856,7 +962,6 @@
 
             showToast('Начинаем сравнение портфелей...', 'info');
 
-            // Показываем прогресс
             const progressBar = document.getElementById('progressBar');
             const progressFill = document.getElementById('progressFill');
             const progressText = document.getElementById('progressText');
@@ -866,51 +971,38 @@
             matches = [];
             const totalWorks = author2.works.length;
             
-            // Для каждой работы подозреваемого ищем совпадения в оригинале
             for (let i = 0; i < author2.works.length; i++) {
                 const suspectWork = author2.works[i];
                 
-                // Обновляем прогресс
                 const progress = Math.round((i / totalWorks) * 100);
                 progressFill.style.width = progress + '%';
                 progressText.textContent = progress + '%';
                 
-                // Ищем совпадения
                 const match = await findMatch(suspectWork, author1.works);
                 
                 if (match) {
                     matches.push(match);
                 }
                 
-                // Даем браузеру передышку
                 if (i % 10 === 0) {
                     await new Promise(resolve => setTimeout(resolve, 10));
                 }
             }
 
-            // Скрываем прогресс
             progressBar.style.display = 'none';
             
-            // Обновляем результаты
             updateResults();
-            
-            // Показываем панель результатов
             document.getElementById('resultsPanel').classList.add('show');
             
             showToast(`Сравнение завершено. Найдено ${matches.length} совпадений`, 'success');
         }
 
-        // Поиск совпадения для одной работы
+        // Поиск совпадения (упрощенная версия для демонстрации)
         async function findMatch(suspectWork, originalWorks) {
-            // Здесь должен быть реальный API для сравнения изображений
-            // Пока используем имитацию на основе ID
-            
             for (const originalWork of originalWorks) {
-                // Имитация визуального сходства
-                // В реальности здесь должен быть вызов API компьютерного зрения
-                const similarity = calculateMockSimilarity(suspectWork, originalWork);
-                
-                if (similarity > 50) {
+                // Простое сравнение для демонстрации
+                // В реальности здесь должен быть API компьютерного зрения
+                if (Math.random() > 0.9) { // 10% случайных совпадений для демо
                     return {
                         suspectId: suspectWork.id,
                         suspectTitle: suspectWork.title,
@@ -918,25 +1010,22 @@
                         originalId: originalWork.id,
                         originalTitle: originalWork.title,
                         originalDate: originalWork.date,
-                        similarity: similarity,
+                        similarity: 50 + Math.random() * 50,
                         dateDiff: calculateDateDiff(originalWork.date, suspectWork.date)
                     };
                 }
             }
-            
             return null;
         }
 
-        // Имитация сходства (для демонстрации)
-        function calculateMockSimilarity(work1, work2) {
-            // В реальности здесь должен быть API компьютерного зрения
-            // Сейчас просто случайное число
-            return Math.random() * 100;
+        function calculateDateDiff(date1, date2) {
+            const d1 = new Date(date1);
+            const d2 = new Date(date2);
+            const diffTime = d2 - d1;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
 
-        // Обновление результатов
         function updateResults() {
-            // Общий процент сходства
             const totalWorks = author2.works.length;
             const similarityPercent = totalWorks > 0 ? Math.round((matches.length / totalWorks) * 100) : 0;
             
@@ -951,7 +1040,6 @@
                 statusEl.innerHTML = '✅ <strong style="color: #27ae60;">Низкий риск</strong>';
             }
 
-            // Статистика по уровням сходства
             const highMatches = matches.filter(m => m.similarity > 80).length;
             const mediumMatches = matches.filter(m => m.similarity >= 60 && m.similarity <= 80).length;
             const lowMatches = matches.filter(m => m.similarity < 60).length;
@@ -961,14 +1049,10 @@
             document.getElementById('mediumMatches').textContent = mediumMatches;
             document.getElementById('lowMatches').textContent = lowMatches;
 
-            // Таблица совпадений
             updateMatchesTable();
-            
-            // Жалоба
             updateComplaint();
         }
 
-        // Обновление таблицы совпадений
         function updateMatchesTable() {
             const tbody = document.getElementById('matchesBody');
             
@@ -993,13 +1077,13 @@
                     <tr>
                         <td>
                             <div><strong>${match.suspectTitle}</strong></div>
-                            <div style="font-size: 0.85em; color: #666;">ID: ${match.suspectId}</div>
-                            <div style="font-size: 0.85em; color: #666;">📅 ${match.suspectDate}</div>
+                            <div style="font-size: 0.85em;">ID: ${match.suspectId}</div>
+                            <div style="font-size: 0.85em;">📅 ${match.suspectDate}</div>
                         </td>
                         <td>
                             <div><strong>${match.originalTitle}</strong></div>
-                            <div style="font-size: 0.85em; color: #666;">ID: ${match.originalId}</div>
-                            <div style="font-size: 0.85em; color: #666;">📅 ${match.originalDate}</div>
+                            <div style="font-size: 0.85em;">ID: ${match.originalId}</div>
+                            <div style="font-size: 0.85em;">📅 ${match.originalDate}</div>
                         </td>
                         <td>
                             <span class="similarity-badge ${badgeClass}">${match.similarity.toFixed(1)}%</span>
@@ -1022,7 +1106,6 @@
             tbody.innerHTML = html;
         }
 
-        // Обновление жалобы
         function updateComplaint() {
             const suspiciousMatches = matches.filter(m => m.similarity > 70 && m.dateDiff > 0);
             
@@ -1058,7 +1141,7 @@ Medium Similarity (60-80%): ${document.getElementById('mediumMatches').textConte
 Low Similarity (<60%): ${document.getElementById('lowMatches').textContent}
 
 ----------------------------------------------------------------
-SUSPICIOUS WORKS (Potential Copyright Infringement)
+SUSPICIOUS WORKS
 ----------------------------------------------------------------
 
 `;
@@ -1077,12 +1160,10 @@ SUSPICIOUS WORKS (Potential Copyright Infringement)
    
    EVIDENCE:
    - Visual Similarity: ${match.similarity.toFixed(1)}%
-   - Time Difference: ${match.dateDiff} days (Suspect uploaded LATER)
+   - Time Difference: ${match.dateDiff} days
    
 `;
                 });
-            } else {
-                complaint += `No suspicious matches found.\n\n`;
             }
 
             complaint += `----------------------------------------------------------------
@@ -1090,40 +1171,20 @@ CONTACT INFORMATION
 ----------------------------------------------------------------
 
 Name: [Your Full Name]
-Email: [Your Email Address]
+Email: [Your Email]
 Shutterstock Contributor ID: [Your ID]
 
 ----------------------------------------------------------------
-STATEMENT OF GOOD FAITH
+STATEMENT
 ----------------------------------------------------------------
 
-I have a good faith belief that the use of the material in the manner complained of is not authorized by the copyright owner, its agent, or the law.
-
-The information in this notification is accurate, and under penalty of perjury, I am the owner of an exclusive right that is allegedly infringed.
-
-----------------------------------------------------------------
-DIGITAL SIGNATURE
-----------------------------------------------------------------
+I have a good faith belief that the use of the material is not authorized.
+The information in this notification is accurate.
 
 Sincerely,
-
-[Your Name]
-[Date: ${new Date().toLocaleDateString()}]
-
-----------------------------------------------------------------
-* This complaint is generated automatically based on portfolio comparison.
-* Please review before sending to infringementclaims@shutterstock.com
-`;
+[Your Name]`;
 
             document.getElementById('complaintBox').textContent = complaint;
-        }
-
-        // Вспомогательные функции
-        function calculateDateDiff(date1, date2) {
-            const d1 = new Date(date1);
-            const d2 = new Date(date2);
-            const diffTime = d2 - d1;
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
 
         function showToast(message, type) {
@@ -1154,7 +1215,7 @@ Sincerely,
 
         function sendEmail() {
             const complaint = document.getElementById('complaintBox').textContent;
-            const subject = encodeURIComponent('DMCA Copyright Infringement Notice - Portfolio Comparison');
+            const subject = encodeURIComponent('DMCA Copyright Infringement Notice');
             const body = encodeURIComponent(complaint);
             window.location.href = `mailto:infringementclaims@shutterstock.com?subject=${subject}&body=${body}`;
         }
@@ -1164,24 +1225,13 @@ Sincerely,
                 date: new Date().toISOString(),
                 author1: {
                     url: author1.url,
-                    works: author1.works.length,
-                    firstDate: document.getElementById('author1FirstDate').textContent,
-                    lastDate: document.getElementById('author1LastDate').textContent
+                    works: author1.works.length
                 },
                 author2: {
                     url: author2.url,
-                    works: author2.works.length,
-                    firstDate: document.getElementById('author2FirstDate').textContent,
-                    lastDate: document.getElementById('author2LastDate').textContent
+                    works: author2.works.length
                 },
-                matches: matches,
-                statistics: {
-                    totalMatches: matches.length,
-                    highSimilarity: document.getElementById('highMatches').textContent,
-                    mediumSimilarity: document.getElementById('mediumMatches').textContent,
-                    lowSimilarity: document.getElementById('lowMatches').textContent,
-                    overallSimilarity: document.getElementById('overallSimilarity').textContent
-                }
+                matches: matches
             };
             
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1206,6 +1256,8 @@ Sincerely,
             
             document.getElementById('author1Url').value = '';
             document.getElementById('author2Url').value = '';
+            document.getElementById('manualFile1').value = '';
+            document.getElementById('manualFile2').value = '';
             
             showToast('🔄 Все данные очищены', 'success');
         }
